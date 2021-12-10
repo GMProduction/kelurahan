@@ -39,20 +39,27 @@ Route::get('/', function () {
 });
 
 
-Route::get('/admin', function () {
-    return view('admin.dashboard');
+Route::prefix('admin')->group(function () {
+    Route::get('/', function () {
+        return view('admin.dashboard');
+    });
+
+    Route::prefix('syarat')->group(function (){
+        Route::match(['post', 'get'], '/', [\App\Http\Controllers\SyaratController::class, 'index']);
+    });
+
+    Route::prefix('surat')->group(function () {
+        Route::match(['post', 'get'], '/', [\App\Http\Controllers\SuratController::class, 'index']);
+        Route::post('/store', [\App\Http\Controllers\SuratController::class, 'store']);
+    });
+
+
+
 });
+
 
 Route::get('/admin/warga', function () {
     return view('admin.warga');
-});
-
-Route::get('/admin/syarat', function () {
-    return view('admin.syarat');
-});
-
-Route::get('/admin/surat', function () {
-    return view('admin.surat');
 });
 
 Route::get('/admin/pengurusan', function () {

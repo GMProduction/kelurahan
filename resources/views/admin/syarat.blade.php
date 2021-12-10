@@ -30,39 +30,30 @@
                     <tr>
                         <th>#</th>
                         <th>Nama Syarat</th>
-                        {{-- <th>Foto</th> --}}
                         <th>Action</th>
                     </tr>
                 </thead>
 
-                <tr>
-                    <td>1</td>
-                    <td>Surat Pengantar</td>
-                    {{-- <td>
-                        <a target="_blank"
-                            href="https://storage.googleapis.com/finansialku_media/wordpress_media/2020/01/50a970a6-7-contoh-surat-pengantar-untuk-berbagai-keperluan-05-surat-pengantar-laporan-finansialku.jpg">
-                            <img src="https://storage.googleapis.com/finansialku_media/wordpress_media/2020/01/50a970a6-7-contoh-surat-pengantar-untuk-berbagai-keperluan-05-surat-pengantar-laporan-finansialku.jpg"
-                                style="width: 75px; height: 100px; object-fit: cover" />
-                        </a>
-
-
-                    </td> --}}
-
-                    <td style="width: 150px">
-                        <button type="button" class="btn btn-success btn-sm" id="editData">Ubah</button>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="hapus('id', 'nama') ">hapus</button>
-                    </td>
-                </tr>
-
-
+                <tbody>
+                @forelse ($data as $v)
+                    <tr>
+                        <td>{{ $loop->index + 1 }}</td>
+                        <td>
+                            {{ $v->nama }}
+                        </td>
+                        <td style="width: 150px">
+                            <button type="button" class="btn btn-success btn-sm" id="editData">Ubah</button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="hapus('id', 'nama') ">hapus
+                            </button>
+                        </td>
+                    </tr>
+                @empty
+                    <tr><td colspan="3" class="text-center">Belum Ada Data Syarat</td></tr>
+                @endforelse
+                </tbody>
             </table>
-
         </div>
-
-
         <div>
-
-
             <!-- Modal Tambah-->
             <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -73,14 +64,14 @@
                                 aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form id="form" onsubmit="return save()">
+                            <form id="form" method="post">
                                 @csrf
                                 <input id="id" name="id" hidden>
                                 <div class="mb-3">
                                     <label for="nama" class="form-label">Nama Syarat</label>
                                     <input type="text" required class="form-control" id="nama" name="nama">
                                 </div>
-                                
+
                                 <div class="mb-4"></div>
                                 <button type="submit" class="btn btn-primary">Simpan</button>
                             </form>

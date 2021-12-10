@@ -23,53 +23,52 @@
 
     </style>
     <section class="m-2">
-
-
         <div class="table-container">
-
-
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5>Data Surat</h5>
                 <button type="button" class="btn btn-primary btn-sm ms-auto" id="addData">Tambah Data
                 </button>
             </div>
-
-
             <table class="table table-striped table-bordered ">
                 <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Nama Surat</th>
-                        <th>Syarat</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-
                 <tr>
-                    <td>1</td>
-                    <td>
-                        Surat Kematian
-                    </td>
-
-                    <td>
-                        KTP (meninggal), KTP (suami / istri), KK, Surat Pengantar dari RT/RW
-                    </td>
-
-                    <td style="width: 150px">
-                        <button type="button" class="btn btn-success btn-sm" id="editData">Ubah</button>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="hapus('id', 'nama') ">hapus</button>
-                    </td>
+                    <th>#</th>
+                    <th>Nama Surat</th>
+                    <th>Syarat</th>
+                    <th>Action</th>
                 </tr>
+                </thead>
+                <tbody>
+                @forelse ($data as $v)
+                    <tr>
+                        <td>{{ $loop->index + 1 }}</td>
+                        <td>
+                            {{ $v->nama }}
+                        </td>
+                        @php
+                            $syarat = '';
+                            foreach ($v->syarat as $s) {
+                                $syarat .= $s->nama.', ';
+                            }
+                        @endphp
+                        <td>
+                            {{ count($v->syarat) > 0 ? $syarat : '-' }}
+                        </td>
 
-
+                        <td style="width: 150px">
+                            <button type="button" class="btn btn-success btn-sm" id="editData">Ubah</button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="hapus('id', 'nama') ">hapus
+                            </button>
+                        </td>
+                    </tr>
+                @empty
+                    <p>No users</p>
+                @endforelse
+                </tbody>
             </table>
 
         </div>
-
-
         <div>
-
-
             <!-- Modal Tambah-->
             <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -77,13 +76,12 @@
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Tambah Siswa</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                                    aria-label="Close"></button>
                         </div>
 
 
                         <div class="modal-body">
-                            <form id="form" onsubmit="return save()">
-
+                            <form id="form" action="/admin/surat" method="post">
                                 @csrf
                                 <input id="id" name="id" hidden>
                                 <div class="mb-3">
@@ -91,39 +89,18 @@
                                     <input type="text" required class="form-control" id="nama" name="nama">
                                 </div>
 
-                        <p class="fw-bold mb-0">Syarat-syarat</p>
-
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">
-                                        Surat Pengantar
-                                    </label>
-                                </div>
-
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">
-                                        KTP
-                                    </label>
-                                </div>
-
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">
-                                        KTP (Suami / Istri)
-                                    </label>
-                                </div>
-
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                    <label class="form-check-label" for="flexCheckDefault">
-                                        KK
-                                    </label>
-                                </div>
-
-
+                                <p class="fw-bold mb-0">Syarat-syarat</p>
+                                @foreach($syarats as $v)
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="{{ $v->id }}"
+                                               id="flexCheckDefault-{{$loop->index}}" name="syarats[]">
+                                        <label class="form-check-label" for="flexCheckDefault-{{$loop->index}}">
+                                            {{ $v->nama }}
+                                        </label>
+                                    </div>
+                                @endforeach
                                 <div class="mb-4"></div>
-                                <button type="submit" class="btn btn-primary">Simpan</button>
+                                <button type="submit" class="btn btn-primary btn-add-surat">Simpan</button>
                             </form>
                         </div>
 
@@ -139,11 +116,12 @@
 
 @section('script')
     <script>
-        $(document).ready(function() {
 
-        })
+        $(document).ready(function () {
 
-        $(document).on('click', '#editData, #addData', function() {
+        });
+
+        $(document).on('click', '#editData, #addData', function () {
             $('#modal #id').val($(this).data('id'))
             $('#modal #nama').val($(this).data('nama'))
             $('#modal #nphp').val($(this).data('hp'))
@@ -174,12 +152,12 @@
 
         function hapus(id, name) {
             swal({
-                    title: "Menghapus data?",
-                    text: "Apa kamu yakin, ingin menghapus data ?!",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
+                title: "Menghapus data?",
+                text: "Apa kamu yakin, ingin menghapus data ?!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
                 .then((willDelete) => {
                     if (willDelete) {
                         swal("Berhasil Menghapus data!", {
