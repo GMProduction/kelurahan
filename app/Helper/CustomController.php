@@ -5,6 +5,8 @@ namespace App\Helper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class CustomController extends Controller
@@ -100,4 +102,9 @@ class CustomController extends Controller
         ], $status);
     }
 
+    public function uploadImage($field, $targetName = '', $disk = 'upload')
+    {
+        $file = $this->request->file($field);
+        return Storage::disk($disk)->put($targetName, File::get($file));
+    }
 }

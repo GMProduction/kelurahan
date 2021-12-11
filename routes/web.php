@@ -40,8 +40,13 @@ Route::get('/', function () {
 
 
 Route::prefix('admin')->group(function () {
+
     Route::get('/', function () {
         return view('admin.dashboard');
+    });
+
+    Route::prefix('warga')->group(function () {
+        Route::match(['post', 'get'],'/', [\App\Http\Controllers\WargaController::class, 'index']);
     });
 
     Route::prefix('syarat')->group(function (){
@@ -58,9 +63,7 @@ Route::prefix('admin')->group(function () {
 });
 
 
-Route::get('/admin/warga', function () {
-    return view('admin.warga');
-});
+
 
 Route::get('/admin/pengurusan', function () {
     return view('admin.pengurusan');

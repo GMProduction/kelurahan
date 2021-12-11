@@ -19,8 +19,8 @@ class CreateWargas extends Migration
             $table->string('nama');
             $table->text('alamat');
             $table->string('no_hp', 16);
-            $table->text('ktp');
-            $table->text('foto');
+            $table->text('ktp')->nullable(true);
+            $table->text('foto')->nullable(true);
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
         });

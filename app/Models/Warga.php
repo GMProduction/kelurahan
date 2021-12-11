@@ -9,6 +9,15 @@ class Warga extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'nama',
+        'alamat',
+        'no_hp',
+        'ktp',
+        'foto'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

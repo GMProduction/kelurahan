@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Helper\CustomController;
 use App\Models\Surat;
 use App\Models\Syarat;
+use Tymon\JWTAuth\Facades\JWTAuth as JWTAuth;
 
 class SuratController extends CustomController
 {
@@ -43,5 +44,4 @@ class SuratController extends CustomController
             return $this->jsonResponse('Terjadi Kesalahan ' . $e->getMessage(), 500);
         }
     }
-
 }
