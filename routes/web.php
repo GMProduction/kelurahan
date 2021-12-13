@@ -46,10 +46,12 @@ Route::prefix('admin')->group(function () {
     });
 
     Route::prefix('warga')->group(function () {
-        Route::match(['post', 'get'],'/', [\App\Http\Controllers\WargaController::class, 'index']);
+        Route::match(['post', 'get'], '/', [\App\Http\Controllers\WargaController::class, 'index']);
+        Route::post('/patch', [\App\Http\Controllers\WargaController::class, 'patch']);
+        Route::post('/delete', [\App\Http\Controllers\WargaController::class, 'hapus']);
     });
 
-    Route::prefix('syarat')->group(function (){
+    Route::prefix('syarat')->group(function () {
         Route::match(['post', 'get'], '/', [\App\Http\Controllers\SyaratController::class, 'index']);
     });
 
@@ -59,10 +61,7 @@ Route::prefix('admin')->group(function () {
     });
 
 
-
 });
-
-
 
 
 Route::get('/admin/pengurusan', function () {
