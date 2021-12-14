@@ -34,7 +34,7 @@ class SuratController extends CustomController
     public function store()
     {
         try {
-            $syarats = $this->postField('syaratss') === null ? [] : $this->postField('syaratss');
+            $syarats = $this->postField('syarats') === null ? [] : $this->postField('syarats');
             $surat = new Surat();
             $surat->nama = $this->postField('nama');
             $surat->save();
@@ -42,6 +42,46 @@ class SuratController extends CustomController
             return $this->jsonResponse('success', 200);
         } catch (\Exception $e) {
             return $this->jsonResponse('Terjadi Kesalahan ' . $e->getMessage(), 500);
+        }
+    }
+
+    public function getSyarats()
+    {
+        try {
+            $surat = Surat::with('syarat')->where('id', '=', $this->field('id'))
+                ->first();
+            if (!$surat) {
+                return $this->jsonResponse('Terjadi Kesalahan ', 500);
+            }
+            return $this->jsonResponse('success', 200, $surat);
+        } catch (\Exception $e) {
+            return $this->jsonResponse('Terjadi Kesalahan ' . $e->getMessage(), 500);
+        }
+    }
+
+    public function patch()
+    {
+        $surat = Surat::find($this->postField('id-edit'));
+
+        $surat->update([
+            'nama' => $this->postField('nama-edit')
+        ]);
+        $syarat = $this->postField('syarats-edit') === null ? [] : $this->postField('syarats-edit');
+        $surat->syarat()->sync($syarat);
+        return redirect()->back()->with('success');
+    }
+
+    public function hapus()
+    {
+        try {
+            Surat::destroy($this->postField('id'));
+            return response()->json([
+                'msg' => 'success'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'msg' => 'gagal ' . $e
+            ], 500);
         }
     }
 }

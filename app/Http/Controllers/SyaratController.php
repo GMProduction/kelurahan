@@ -26,4 +26,27 @@ class SyaratController extends CustomController
         $data = Syarat::all();
         return view('admin.syarat')->with(['data' => $data]);
     }
+
+    public function patch()
+    {
+        $syarat = Syarat::find($this->postField('id-edit'));
+        $syarat->update([
+            'nama' => $this->postField('nama-edit')
+        ]);
+        return redirect()->back()->with('success');
+    }
+
+    public function hapus()
+    {
+        try {
+            Syarat::destroy($this->postField('id'));
+            return response()->json([
+                'msg' => 'success'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'msg' => 'gagal ' . $e
+            ], 500);
+        }
+    }
 }

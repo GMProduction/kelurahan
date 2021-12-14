@@ -5,12 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Syarat extends Model
+class PengurusanSyarat extends Model
 {
     use HasFactory;
-    protected $hidden = ['pivot'];
 
-    protected $fillable = [
-        'nama',
-    ];
+    protected $table = 'pengurusan_syarat';
+
+
 }

@@ -42,8 +42,11 @@
                             {{ $v->nama }}
                         </td>
                         <td style="width: 150px">
-                            <button type="button" class="btn btn-success btn-sm" id="editData">Ubah</button>
-                            <button type="button" class="btn btn-danger btn-sm" onclick="hapus('id', 'nama') ">hapus
+                            <button type="button" class="btn btn-success btn-sm btn-edit" id="editData"
+                                    data-id="{{$v->id}}"
+                                    data-nama="{{$v->nama}}"
+                            >Ubah</button>
+                            <button type="button" class="btn btn-danger btn-sm btn-hapus" data-id="{{ $v->id }}">hapus
                             </button>
                         </td>
                     </tr>
@@ -59,7 +62,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Tambah Siswa</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Tambah Syarat</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
@@ -81,6 +84,31 @@
                 </div>
             </div>
 
+            <div class="modal fade" id="modal-edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Tambah Syarat</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="form-edit" method="post" action="/admin/syarat/patch">
+                                @csrf
+                                <input id="id-edit" name="id-edit" hidden>
+                                <div class="mb-3">
+                                    <label for="nama-edit" class="form-label">Nama Syarat</label>
+                                    <input type="text" required class="form-control" id="nama-edit" name="nama-edit">
+                                </div>
+
+                                <div class="mb-4"></div>
+                                <button type="submit" class="btn btn-primary btn-edit-save">Simpan</button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
 
     </section>
@@ -90,10 +118,21 @@
 @section('script')
     <script>
         $(document).ready(function() {
+            $('.btn-edit').on('click', function () {
+                let id = this.dataset.id;
+                let nama = this.dataset.nama;
+                $('#id-edit').val(id);
+                $('#nama-edit').val(nama);
+                $('#modal-edit').modal('show')
+            });
 
-        })
+            $('.btn-hapus').on('click', function () {
+                let id = this.dataset.id;
+                hapus(id);
+            })
+        });
 
-        $(document).on('click', '#editData, #addData', function() {
+        $(document).on('click', '#addData', function() {
             $('#modal #id').val($(this).data('id'))
             $('#modal #nama').val($(this).data('nama'))
             $('#modal #nphp').val($(this).data('hp'))
@@ -122,6 +161,23 @@
 
         }
 
+        async function destroy(id) {
+            try {
+                let response = await $.post('/admin/syarat/delete', {
+                    _token: '{{ csrf_token() }}',
+                    id: id
+                });
+                swal("Berhasil Menghapus data!", {
+                    icon: "success",
+                });
+                window.location.reload();
+                console.log(response)
+            }catch(e) {
+                console.log(e);
+                alert('gagal')
+            }
+        }
+
         function hapus(id, name) {
             swal({
                     title: "Menghapus data?",
@@ -132,9 +188,7 @@
                 })
                 .then((willDelete) => {
                     if (willDelete) {
-                        swal("Berhasil Menghapus data!", {
-                            icon: "success",
-                        });
+                        destroy(id);
                     } else {
                         swal("Data belum terhapus");
                     }

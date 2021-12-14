@@ -53,19 +53,24 @@ Route::prefix('admin')->group(function () {
 
     Route::prefix('syarat')->group(function () {
         Route::match(['post', 'get'], '/', [\App\Http\Controllers\SyaratController::class, 'index']);
+        Route::post('/patch', [\App\Http\Controllers\SyaratController::class, 'patch']);
+        Route::post('/delete', [\App\Http\Controllers\SyaratController::class, 'hapus']);
     });
 
     Route::prefix('surat')->group(function () {
         Route::match(['post', 'get'], '/', [\App\Http\Controllers\SuratController::class, 'index']);
         Route::post('/store', [\App\Http\Controllers\SuratController::class, 'store']);
+        Route::get('/syarat', [\App\Http\Controllers\SuratController::class, 'getSyarats']);
+        Route::post('/patch', [\App\Http\Controllers\SuratController::class, 'patch']);
+        Route::post('/delete', [\App\Http\Controllers\SuratController::class, 'hapus']);
+    });
+
+    Route::prefix('pengurusan')->group(function () {
+        Route::match(['post', 'get'], '/', [\App\Http\Controllers\PengurusanController::class, 'index']);
+        Route::get('/syarat', [\App\Http\Controllers\PengurusanController::class, 'getSyarats']);
     });
 
 
-});
-
-
-Route::get('/admin/pengurusan', function () {
-    return view('admin.pengurusan');
 });
 
 Route::post('/login', [AuthController::class, 'login']);

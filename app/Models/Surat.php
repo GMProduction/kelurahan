@@ -10,6 +10,10 @@ class Surat extends Model
     use HasFactory;
     protected $hidden = ['pivot'];
 
+    protected $fillable = [
+        'nama',
+    ];
+
     public function syarat()
     {
         return $this->belongsToMany(Syarat::class, 'surat_syarat', 'surat_id', 'syarat_id', 'id', 'id');

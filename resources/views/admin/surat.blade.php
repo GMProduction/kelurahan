@@ -56,8 +56,9 @@
                         </td>
 
                         <td style="width: 150px">
-                            <button type="button" class="btn btn-success btn-sm" id="editData">Ubah</button>
-                            <button type="button" class="btn btn-danger btn-sm" onclick="hapus('id', 'nama') ">hapus
+                            <button type="button" class="btn btn-success btn-sm btn-edit" data-id="{{$v->id}}" data-nama="{{ $v->nama }}">Ubah
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm btn-hapus" data-id="{{$v->id}}">hapus
                             </button>
                         </td>
                     </tr>
@@ -74,12 +75,10 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Tambah Siswa</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Tambah Surat</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                         </div>
-
-
                         <div class="modal-body">
                             <form id="form" action="/admin/surat" method="post">
                                 @csrf
@@ -103,11 +102,46 @@
                                 <button type="submit" class="btn btn-primary btn-add-surat">Simpan</button>
                             </form>
                         </div>
-
                     </div>
                 </div>
             </div>
 
+
+            <div class="modal fade" id="modal-edit" tabindex="-1" aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Edit Surat</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="form" action="/admin/surat/patch" method="post">
+                                @csrf
+                                <input id="id-edit" name="id-edit" hidden>
+                                <div class="mb-3">
+                                    <label for="nama-edit" class="form-label">Nama Surat</label>
+                                    <input type="text" required class="form-control" id="nama-edit" name="nama-edit">
+                                </div>
+                                <p class="fw-bold mb-0">Syarat-syarat</p>
+                                @foreach($syarats as $v)
+                                    <div class="form-check">
+                                        <input class="form-check-input syarats-edit" type="checkbox"
+                                               value="{{ $v->id }}"
+                                               id="syarat-{{$v->id}}" name="syarats-edit[]">
+                                        <label class="form-check-label" for="syarat-{{$v->id}}">
+                                            {{ $v->nama }}
+                                        </label>
+                                    </div>
+                                @endforeach
+                                <div class="mb-4"></div>
+                                <button type="submit" class="btn btn-primary btn-add-surat">Simpan</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </section>
@@ -119,7 +153,45 @@
 
         $(document).ready(function () {
 
+            $('.btn-edit').on('click', function () {
+                getSyarat(this.dataset.id, this.dataset.nama);
+            })
+
+            $('.btn-hapus').on('click', function () {
+                let id = this.dataset.id;
+                hapus(id);
+            })
         });
+
+        function setChecked(data) {
+            let checkbox = $(".syarats-edit").map(function () {
+                return $(this).attr('id');
+            }).get();
+            $('.syarats-edit').attr('checked', false);
+            $.each(checkbox, function (k, v) {
+                let tmpID = v.substring(7, v.length);
+                let item = data.find(i => i.id === parseInt(tmpID));
+                if (item !== undefined) {
+                    $('#' + v).attr('checked', true);
+                }
+                console.log(item);
+            });
+            console.log(checkbox);
+        }
+
+        async function getSyarat(id, nama) {
+            try {
+                $('#id-edit').val(id);
+                $('#nama-edit').val(nama);
+                let response = await $.get('/admin/surat/syarat?id=' + id);
+                let syarat = response['payload']['syarat'];
+                console.log(syarat);
+                setChecked(syarat);
+                $('#modal-edit').modal('show');
+            } catch (e) {
+                alert('Gagal Mengambil Data Surat')
+            }
+        }
 
         $(document).on('click', '#editData, #addData', function () {
             $('#modal #id').val($(this).data('id'))
@@ -150,6 +222,23 @@
 
         }
 
+        async function destroy(id) {
+            try {
+                let response = await $.post('/admin/surat/delete', {
+                    _token: '{{ csrf_token() }}',
+                    id: id
+                });
+                swal("Berhasil Menghapus data!", {
+                    icon: "success",
+                });
+                window.location.reload();
+                console.log(response)
+            }catch(e) {
+                console.log(e);
+                alert('gagal')
+            }
+        }
+
         function hapus(id, name) {
             swal({
                 title: "Menghapus data?",
@@ -160,9 +249,7 @@
             })
                 .then((willDelete) => {
                     if (willDelete) {
-                        swal("Berhasil Menghapus data!", {
-                            icon: "success",
-                        });
+                        destroy(id);
                     } else {
                         swal("Data belum terhapus");
                     }
