@@ -56,16 +56,16 @@
                                     Ubah Status
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <a class="dropdown-item btn-status" data-value="menunggu" href="#">Menunggu</a>
-                                    <a class="dropdown-item btn-status" data-value="diterima" href="#">Diterima</a>
-                                    <a class="dropdown-item btn-status" data-value="ditolak" href="#">Ditolak</a>
-                                    <a class="dropdown-item btn-status" data-value="diambil" href="#">Diambil</a>
+                                    <a class="dropdown-item btn-status" data-status="menunggu" data-id="{{ $v->id }}" href="#">Menunggu</a>
+                                    <a class="dropdown-item btn-status" data-status="diterima" data-id="{{ $v->id }}" href="#">Diterima</a>
+                                    <a class="dropdown-item btn-status" data-status="ditolak" data-id="{{ $v->id }}" href="#">Ditolak</a>
+                                    <a class="dropdown-item btn-status" data-status="diambil" data-id="{{ $v->id }}" href="#">Diambil</a>
                                 </ul>
                             </div>
 
-                            <button type="button" class="btn btn-danger btn-sm mt-1"
-                                    onclick="hapus('id', 'nama') ">hapus
-                            </button>
+{{--                            <button type="button" class="btn btn-danger btn-sm mt-1"--}}
+{{--                                    onclick="hapus('id', 'nama') ">hapus--}}
+{{--                            </button>--}}
                         </td>
                     </tr>
                 @empty
@@ -92,28 +92,25 @@
                                     aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form id="form" onsubmit="return save()">
-                                @csrf
-                                <input id="id" name="id" hidden>
-                                <table class="table table-striped table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Syarat</th>
-                                        <th>Gambar</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="tb-kelengkapan">
+                            <input id="id" name="id" hidden>
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Syarat</th>
+                                    <th>Gambar</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tb-kelengkapan">
 
-                                    </tbody>
-                                </table>
-                                <div class="mb-4"></div>
-                                <div class="d-flex">
-                                    <a class="btn btn-primary">Terima</a>
-                                    <a class="btn btn-danger ms-2">Tolak</a>
-                                    <a class="btn btn-success ms-auto">Whatsapp Pemohon</a>
-                                </div>
-                            </form>
+                                </tbody>
+                            </table>
+                            <div class="mb-4"></div>
+                            <div class="d-flex">
+                                <a class="btn btn-primary btn-update" data-status="diterima" data-id="">Terima</a>
+                                <a class="btn btn-danger ms-2 btn-update" data-status="ditolak" data-id="">Tolak</a>
+                                <a class="btn btn-success ms-auto">Whatsapp Pemohon</a>
+                            </div>
                         </div>
 
                     </div>
@@ -157,14 +154,15 @@
                     let status = 'Belum Mengumpulkan';
                     if (item !== undefined) {
                         clear = true;
-                        if(item['foto'] !== null) {
+                        if (item['foto'] !== null) {
                             status = item['foto'];
-                        }else {
+                        } else {
                             status = '/image/no-foto.png'
                         }
                     }
                     el.append(createKelengkapan(v, k, clear, status))
                 });
+                $('.btn-update').attr('data-id', id);
                 console.log(response);
                 $('#modal').modal('show');
             } catch (e) {
@@ -173,10 +171,35 @@
             }
         }
 
+        async function updateStatus(id, status) {
+            try {
+                let response = await $.post('/admin/pengurusan/patch', {
+                    _token: '{{ csrf_token() }}',
+                    id: id,
+                    status: status
+                });
+                console.log(response);
+                window.location.reload();
+            } catch (e) {
+                console.log(e);
+                alert('gagal');
+            }
+        }
+
         $(document).ready(function () {
             $('.btn-cek').on('click', function () {
                 getSyarats(this.dataset.id);
-            })
+            });
+
+            $('.btn-update').on('click', function () {
+                // console.log(this.dataset.id);
+                updateStatus(this.dataset.id, this.dataset.status);
+            });
+
+            $('.btn-status').on('click', function (e) {
+                e.preventDefault();
+                updateStatus(this.dataset.id, this.dataset.status);
+            });
         });
 
         $(document).on('click', '#editData, #addData', function () {

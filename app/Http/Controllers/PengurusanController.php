@@ -44,4 +44,22 @@ class PengurusanController extends CustomController
             return $this->jsonResponse('gagal ' . $e->getMessage(), 500);
         }
     }
+
+    public function patch()
+    {
+        try {
+            $status = $this->postField('status');
+            $id = $this->postField('id');
+            $pengurusan = Pengurusan::find($id);
+            if(!$pengurusan) {
+                return $this->jsonResponse('gagal', 500);
+            }
+            $pengurusan->update([
+                'status' => $status
+            ]);
+            return $this->jsonResponse('success', 200);
+        }catch (\Exception $e) {
+            return $this->jsonResponse('gagal ' . $e->getMessage(), 500);
+        }
+    }
 }
