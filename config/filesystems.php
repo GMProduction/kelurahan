@@ -67,6 +67,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'syarat' => [
+            'driver' => 'local',
+            'root' => public_path() . '/syarat',
+            'url' => env('APP_URL') . '/storage',
+            'visibility' => 'public',
+        ],
+
     ],
 
     /*

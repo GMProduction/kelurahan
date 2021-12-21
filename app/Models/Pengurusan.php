@@ -11,6 +11,8 @@ class Pengurusan extends Model
     protected $hidden = ['pivot'];
     protected $fillable = [
         'status',
+        'user_id',
+        'surat_id',
     ];
 
     public function syarat()

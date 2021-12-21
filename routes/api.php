@@ -18,12 +18,20 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
-Route::group(['prefix' => 'auth'], function (){
+Route::group(['prefix' => 'auth'], function () {
     Route::post('login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
     Route::post('register', [\App\Http\Controllers\Api\AuthController::class, 'register']);
 });
 
 
-Route::group(['middleware' => 'auth:api', 'prefix' => 'surat'], function (){
+Route::group(['middleware' => 'auth:api', 'prefix' => 'surat'], function () {
     Route::get('/', [\App\Http\Controllers\Api\SuratController::class, 'getList']);
+    Route::match(['get', 'post'], '/{id}', [\App\Http\Controllers\Api\SuratController::class, 'getDetail']);
 });
+
+Route::group(['middleware' => 'auth:api', 'prefix' => 'pengurusan'], function () {
+    Route::get('/', [\App\Http\Controllers\Api\PengurusanController::class, 'index']);
+    Route::match(['get', 'post'], '/{id}', [\App\Http\Controllers\Api\SuratController::class, 'getDetail']);
+});
+
+

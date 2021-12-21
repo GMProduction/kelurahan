@@ -11,5 +11,10 @@ class PengurusanSyarat extends Model
 
     protected $table = 'pengurusan_syarat';
 
+    protected $fillable = [
+        'pengurusan_id',
+        'syarat_id',
+        'foto'
+    ];
 
 }
