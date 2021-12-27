@@ -44,11 +44,6 @@ class SuratController extends CustomController
                 if (count($syarats) <= 0 ) {
                     return $this->jsonResponse('harap mengisi syarat dengan lengkap!', 202);
                 }
-//                $gbr = null;
-//                foreach ($gambars as $key => $v) {
-//                    $test = $this->request->file('gambar')[3];
-//                    $gbr = $test->getClientOriginalExtension();
-//                }
                 $data = [
                     'syarat' => $syarats,
                     'gambar' => $gambars

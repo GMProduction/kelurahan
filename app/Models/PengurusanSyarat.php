@@ -17,4 +17,9 @@ class PengurusanSyarat extends Model
         'foto'
     ];
 
+    public function syarat()
+    {
+        return $this->belongsTo(Syarat::class, 'syarat_id');
+    }
+
 }
