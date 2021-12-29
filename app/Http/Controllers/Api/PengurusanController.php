@@ -22,7 +22,7 @@ class PengurusanController extends CustomController
     public function index()
     {
         try {
-            $pengurusan = Pengurusan::with(['syarat'])->where('user_id', '=', Auth::id())
+            $pengurusan = Pengurusan::with(['syarat', 'surat'])->where('user_id', '=', Auth::id())
                 ->orderBy('id', 'DESC')
                 ->get();
             return $this->jsonResponse('success', 200, $pengurusan);

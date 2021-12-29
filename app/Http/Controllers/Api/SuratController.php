@@ -34,7 +34,7 @@ class SuratController extends CustomController
     {
         try {
             $user = Auth::id();
-            $surat = Surat::with('syarat:id,nama')->first(['id', 'nama']);
+            $surat = Surat::with('syarat:id,nama')->where("id", $id)->first(['id', 'nama']);
             if (!$surat) {
                 return $this->jsonResponse('Surat Tidak Di Temukan', 202);
             }
