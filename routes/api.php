@@ -34,4 +34,8 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'pengurusan'], function ()
     Route::match(['get', 'post'], '/{id}', [\App\Http\Controllers\Api\PengurusanController::class, 'detail']);
 });
 
+Route::group(['middleware' => 'auth:api', 'prefix' => 'profil'], function () {
+    Route::match(['get', 'post'],'/', [\App\Http\Controllers\Api\ProfileController::class, 'index']);
+});
+
 
