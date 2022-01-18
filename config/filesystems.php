@@ -74,6 +74,13 @@ return [
             'visibility' => 'public',
         ],
 
+        'berita' => [
+            'driver' => 'local',
+            'root' => public_path() . '/berita',
+            'url' => env('APP_URL') . '/storage',
+            'visibility' => 'public',
+        ],
+
     ],
 
     /*

@@ -72,6 +72,13 @@
                 </li>
             </a>
 
+            <a href="/admin/berita" >
+                <li href="#" class="nav-link t-white">
+                    <i class='bx bx-envelope' ></i>
+                    <span class="mx-2">Berita</span>
+                </li>
+            </a>
+
 
             <a href="/logout" class="mt-auto">
                 <li href="#" class="nav-link t-white">

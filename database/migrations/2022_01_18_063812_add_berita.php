@@ -17,7 +17,7 @@ class AddBerita extends Migration
             $table->id();
             $table->string('judul');
             $table->text('deskripsi');
-            $table->text('gambar');
+            $table->text('gambar')->nullable();
             $table->timestamps();
         });
     }

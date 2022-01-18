@@ -71,6 +71,12 @@ Route::prefix('admin')->group(function () {
         Route::post('/patch', [\App\Http\Controllers\PengurusanController::class, 'patch']);
     });
 
+    Route::prefix('berita')->group(function () {
+        Route::match(['post', 'get'], '/', [\App\Http\Controllers\BeritaController::class, 'index']);
+        Route::get('/syarat', [\App\Http\Controllers\PengurusanController::class, 'getSyarats']);
+        Route::post('/patch', [\App\Http\Controllers\PengurusanController::class, 'patch']);
+    });
+
 
 });
 
