@@ -34,10 +34,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('admin.dashboard');
-});
 
+Route::match(['get', 'post'],'/', [AuthController::class, 'login']);
+Route::get('/logout', [AuthController::class, 'logout']);
 
 Route::prefix('admin')->group(function () {
 
@@ -73,13 +72,12 @@ Route::prefix('admin')->group(function () {
 
     Route::prefix('berita')->group(function () {
         Route::match(['post', 'get'], '/', [\App\Http\Controllers\BeritaController::class, 'index']);
-        Route::get('/syarat', [\App\Http\Controllers\PengurusanController::class, 'getSyarats']);
-        Route::post('/patch', [\App\Http\Controllers\PengurusanController::class, 'patch']);
+        Route::post('/patch', [\App\Http\Controllers\BeritaController::class, 'patch']);
+        Route::post('/delete', [\App\Http\Controllers\BeritaController::class, 'hapus']);
     });
 
 
 });
 
-Route::post('/login', [AuthController::class, 'login']);
-Route::get('/logout', [AuthController::class, 'logout']);
+
 Route::post('/register-member', [AuthController::class, 'registerMember']);

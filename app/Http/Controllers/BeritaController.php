@@ -6,6 +6,9 @@ namespace App\Http\Controllers;
 
 use App\Helper\CustomController;
 use App\Models\Berita;
+use App\Models\User;
+use App\Models\Warga;
+use Illuminate\Support\Facades\Hash;
 
 class BeritaController extends CustomController
 {
@@ -36,5 +39,39 @@ class BeritaController extends CustomController
         }
         $berita = Berita::all();
         return view('admin.berita')->with(['data' => $berita]);
+    }
+
+    public function patch()
+    {
+
+        $berita = Berita::find($this->postField('id-edit'));
+
+        $data = [
+            'judul' => $this->postField('judul-edit'),
+            'deskripsi' => $this->postField('deskripsi-edit'),
+        ];
+
+        if ($gambar = $this->request->file('gambar-edit')) {
+            $extFoto = $gambar->getClientOriginalExtension();
+            $photoTarget = uniqid('berita-') . '.' . $extFoto;
+            $data['gambar'] = '/berita/' . $photoTarget;
+            $this->uploadImage('gambar-edit', $photoTarget, 'berita');
+        }
+        $berita->update($data);
+        return redirect()->back()->with('success');
+    }
+
+    public function hapus()
+    {
+        try {
+            Berita::destroy($this->postField('id'));
+            return response()->json([
+                'msg' => 'success'
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'msg' => 'gagal ' . $e
+            ], 500);
+        }
     }
 }

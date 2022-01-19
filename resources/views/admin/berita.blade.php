@@ -55,7 +55,8 @@
                         <td style="width: 150px">
                             <button type="button" class="btn btn-success btn-sm btn-edit" id="editData"
                                     data-id="{{$v->id}}"
-                                    data-nama="{{$v->nama}}"
+                                    data-judul="{{$v->judul}}"
+                                    data-deskripsi="{{$v->deskripsi}}"
                             >Ubah</button>
                             <button type="button" class="btn btn-danger btn-sm btn-hapus" data-id="{{ $v->id }}">hapus
                             </button>
@@ -78,7 +79,7 @@
                                     aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form id="form" method="post">
+                            <form id="form" method="post" enctype="multipart/form-data">
                                 @csrf
                                 <input id="id" name="id" hidden>
                                 <div class="mb-3">
@@ -112,12 +113,21 @@
                                     aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form id="form-edit" method="post" action="/admin/syarat/patch">
+                            <form id="form-edit" method="post" action="/admin/berita/patch" enctype="multipart/form-data">
                                 @csrf
                                 <input id="id-edit" name="id-edit" hidden>
                                 <div class="mb-3">
-                                    <label for="nama-edit" class="form-label">Nama Syarat</label>
-                                    <input type="text" required class="form-control" id="nama-edit" name="nama-edit">
+                                    <label for="judul-edit" class="form-label">Judul Berita</label>
+                                    <input type="text" required class="form-control" id="judul-edit" name="judul-edit">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="deskripsi-edit">Deskripsi</label>
+                                    <textarea class="form-control" id="deskripsi-edit" rows="3" name="deskripsi-edit"></textarea>
+                                </div>
+                                <div class="mt-3 mb-2">
+                                    <label for="gambar-edit" class="form-label">Gambar</label>
+                                    <input class="form-control" type="file" id="gambar-edit" name="gambar-edit">
                                 </div>
 
                                 <div class="mb-4"></div>
@@ -139,9 +149,11 @@
         $(document).ready(function() {
             $('.btn-edit').on('click', function () {
                 let id = this.dataset.id;
-                let nama = this.dataset.nama;
+                let judul = this.dataset.judul;
+                let deskripsi = this.dataset.deskripsi;
                 $('#id-edit').val(id);
-                $('#nama-edit').val(nama);
+                $('#judul-edit').val(judul);
+                $('#deskripsi-edit').val(deskripsi);
                 $('#modal-edit').modal('show')
             });
 
@@ -182,7 +194,7 @@
 
         async function destroy(id) {
             try {
-                let response = await $.post('/admin/syarat/delete', {
+                let response = await $.post('/admin/berita/delete', {
                     _token: '{{ csrf_token() }}',
                     id: id
                 });

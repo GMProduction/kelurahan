@@ -35,7 +35,12 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'pengurusan'], function ()
 });
 
 Route::group(['middleware' => 'auth:api', 'prefix' => 'profil'], function () {
-    Route::match(['get', 'post'],'/', [\App\Http\Controllers\Api\ProfileController::class, 'index']);
+    Route::match(['get', 'post'], '/', [\App\Http\Controllers\Api\ProfileController::class, 'index']);
+});
+
+Route::group(['middleware' => 'auth:api', 'prefix' => 'berita'], function () {
+    Route::get('/', [\App\Http\Controllers\Api\BeritaController::class, 'index']);
+    Route::get('/{id}', [\App\Http\Controllers\Api\BeritaController::class, 'detail']);
 });
 
 
