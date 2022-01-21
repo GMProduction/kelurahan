@@ -27,7 +27,7 @@ class BeritaController extends CustomController
     public function detail($id)
     {
         try {
-            $berita = Berita::with('a')->where('id', '=', $id)->first();
+            $berita = Berita::where('id', '=', $id)->first();
             if (!$berita) {
                 return $this->jsonResponse('Berita Tidak Di Temukan!', 202, $berita);
             }
